@@ -2,17 +2,17 @@ package com.electrodostore.producto_service.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /*Clase global manejadora de excepciones.
-Cuando ocurra una excepción, Spring verá que hay una clase marcada con la annotation: @ControllerAdvice
+Cuando ocurra una excepción, Spring verá que hay una clase marcada con la annotation: @RestControllerAdvice
 por lo que la revisará para encontrar algún manejador o hanlder que maneje la excepción correspondiente*/
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     //Mensaje de error centralizado para cada excepción
