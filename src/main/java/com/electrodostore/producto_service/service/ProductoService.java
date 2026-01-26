@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProductoService implements IProductoService{
@@ -32,7 +33,7 @@ public class ProductoService implements IProductoService{
         //El objeto viene dentro de un optional para evitar el null
         Optional<Producto> objProducto = productoRepo.findById(id);
 
-        //Si el optional viene vació, quiere decir que no existe registro con ese id --> Excepción
+        //Si el optional viene vació, quiere decir que no existe registro con ese ID --> Excepción
         if(objProducto.isEmpty()){throw new ProductoNotFoundException("No se encontró producto con id: " + id);}
 
         return objProducto.get();
@@ -114,5 +115,22 @@ public class ProductoService implements IProductoService{
         productoRepo.save(objProducto);
 
         return buildProductoResponse(objProducto);
+    }
+
+    @Override
+    public List<ProductoResponseDto> findProductosResponse(Set<Long> productsIds) {
+        //Si no se encuentra ningún producto registrado con los ids inidcados -> NOT_FOUND
+        //Si no hay ningún ID con el que buscar -> NOT_FOUND
+        if(productoRepo.findByIdIn(productsIds).isEmpty() || productsIds.isEmpty()){throw new ProductoNotFoundException("No se encontró ningún producto");}
+
+        //Lista de los productos que se van a exponer como Response
+        List<ProductoResponseDto> saleProducts = new ArrayList<>();
+
+        //Vamos tranfiriendo los datos que vienen desde la base de datos a los dtos que serán expuestos al cliente
+        for(Producto objProducto: productoRepo.findByIdIn(productsIds)){
+            saleProducts.add(buildProductoResponse(objProducto));
+        }
+
+        return saleProducts;
     }
 }

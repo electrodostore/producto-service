@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/productos")
@@ -48,5 +49,10 @@ public class ProductoController {
     @PatchMapping("/{id}")
     public ResponseEntity<ProductoResponseDto> patchProducto(@PathVariable Long id, @RequestBody ProductoRequestDto objUpdated){
         return ResponseEntity.ok(productoService.patchProducto(id, objUpdated));
+    }
+
+    @PostMapping("/traer-productos-por-ids")
+    public ResponseEntity<List<ProductoResponseDto>> findPorductos(@RequestBody Set<Long> productosIds){
+        return ResponseEntity.ok(productoService.findProductosResponse(productosIds));
     }
 }
