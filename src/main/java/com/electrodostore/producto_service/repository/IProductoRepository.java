@@ -13,5 +13,5 @@ public interface IProductoRepository extends JpaRepository<Producto, Long> {
     /*Método para treaer una lista de productos buscados por sus ids.
     NOTA: El nombre debe seguir la estructura <accion>By<propiedad><operador> para que SpringData lo intrerprete correctamente
     NOTA: Cuando se espera retornar una lista de algunos registros, el IN como operador es obligatorio*/
-    List<Producto> findByIdIn(Set<Long> ids);
+    List<Producto> findByIdIn(List<Long> ids);
 }

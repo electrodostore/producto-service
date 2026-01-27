@@ -17,7 +17,7 @@ public interface IProductoService {
 
     /*Método para encontrar una lista de productos,a partir de sus ids.
     Método útil para venta-service que necesita encontrar la lista de productos de una determinada venta*/
-    List<ProductoResponseDto> findProductosResponse(Set<Long> productsIds);
+    List<ProductoResponseDto> findProductosResponse(List<Long> productsIds);
 
     ProductoResponseDto saveProducto(ProductoRequestDto objNuevo);
 

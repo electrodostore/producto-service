@@ -118,10 +118,10 @@ public class ProductoService implements IProductoService{
     }
 
     @Override
-    public List<ProductoResponseDto> findProductosResponse(Set<Long> productsIds) {
+    public List<ProductoResponseDto> findProductosResponse(List<Long> productsIds) {
         //Si no se encuentra ningún producto registrado con los ids inidcados -> NOT_FOUND
         //Si no hay ningún ID con el que buscar -> NOT_FOUND
-        if(productoRepo.findByIdIn(productsIds).isEmpty() || productsIds.isEmpty()){throw new ProductoNotFoundException("No se encontró ningún producto");}
+        if(productoRepo.findByIdIn(productsIds).isEmpty()){throw new ProductoNotFoundException("No se encontró ningún producto");}
 
         //Lista de los productos que se van a exponer como Response
         List<ProductoResponseDto> saleProducts = new ArrayList<>();

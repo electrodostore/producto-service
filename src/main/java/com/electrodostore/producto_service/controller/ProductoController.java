@@ -52,7 +52,7 @@ public class ProductoController {
     }
 
     @PostMapping("/traer-productos-por-ids")
-    public ResponseEntity<List<ProductoResponseDto>> findPorductos(@RequestBody Set<Long> productosIds){
+    public ResponseEntity<List<ProductoResponseDto>> findPorductos(@RequestBody List<Long> productosIds){
         return ResponseEntity.ok(productoService.findProductosResponse(productosIds));
     }
 }
