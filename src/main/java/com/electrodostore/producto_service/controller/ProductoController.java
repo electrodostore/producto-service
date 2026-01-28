@@ -14,9 +14,8 @@ import java.util.Set;
 @RequestMapping("/productos")
 public class ProductoController {
 
-    private final IProductoService productoService;
-
     //Inyección de dependencia por constructor para el service de Producto
+    private final IProductoService productoService;
     public ProductoController(IProductoService productoService){this.productoService = productoService;}
 
     @GetMapping
@@ -55,4 +54,11 @@ public class ProductoController {
     public ResponseEntity<List<ProductoResponseDto>> findPorductos(@RequestBody List<Long> productosIds){
         return ResponseEntity.ok(productoService.findProductosResponse(productosIds));
     }
+
+    @PatchMapping("/descontar-stock")
+    public ResponseEntity<Void> descontarStock(@RequestParam Long productoId, @RequestParam Integer cantidadDescontar){
+        productoService.descontarStock(productoId, cantidadDescontar);
+        return ResponseEntity.noContent().build();
+    }
+
 }
