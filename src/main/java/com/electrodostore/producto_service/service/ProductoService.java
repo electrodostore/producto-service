@@ -146,5 +146,7 @@ public class ProductoService implements IProductoService{
 
         //Si llegamos a este punto, descontamos
         objProducto.setStock(objProducto.getStock() - cantidadDescontar);
+
+        productoRepo.save(objProducto);
     }
 }
