@@ -117,6 +117,7 @@ public class ProductoService implements IProductoService{
         return buildProductoResponse(objProducto);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProductoResponseDto> findProductosResponse(List<Long> productsIds) {
         //Si no se encuentra ningún producto registrado con los ids inidcados -> NOT_FOUND
@@ -126,11 +127,24 @@ public class ProductoService implements IProductoService{
         //Lista de los productos que se van a exponer como Response
         List<ProductoResponseDto> saleProducts = new ArrayList<>();
 
-        //Vamos tranfiriendo los datos que vienen desde la base de datos a los dtos que serán expuestos al cliente
+        //Vamos transfiriendo los datos que vienen desde la base de datos a los DTO que serán expuestos al cliente
         for(Producto objProducto: productoRepo.findByIdIn(productsIds)){
             saleProducts.add(buildProductoResponse(objProducto));
         }
 
         return saleProducts;
+    }
+
+    @Transactional
+    @Override
+    public void descontarStock(Long productoId, Integer cantidadDescontar) {
+        //Buscamos Producto para descartar inexistencia
+        Producto objProducto = findProducto(productoId);
+
+        //Verificamos si tenemos stock suficiente para descontar
+        if(cantidadDescontar > objProducto.getStock()){throw new ProductoNotFoundException("Stock insuficiente");}
+
+        //Si llegamos a este punto, descontamos
+        objProducto.setStock(objProducto.getStock() - cantidadDescontar);
     }
 }

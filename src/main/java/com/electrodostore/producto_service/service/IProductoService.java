@@ -29,5 +29,6 @@ public interface IProductoService {
     //Modificación parcial (Solo lo solicitado) del registro Producto
     ProductoResponseDto patchProducto(Long id, ProductoRequestDto objUpdated);
 
-
+    //Método para descontar una cierta cantidad al stock de un determinado producto
+    void descontarStock(Long productoId, Integer cantidadDescontar);
 }
