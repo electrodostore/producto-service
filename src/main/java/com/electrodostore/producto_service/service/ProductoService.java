@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ProductoService implements IProductoService{
@@ -44,7 +43,7 @@ public class ProductoService implements IProductoService{
     public List<ProductoResponseDto> findAllProductos() {
         List<ProductoResponseDto> listProductos = new ArrayList<>();
 
-        //Vamos prepardo cada producto para su posterior exposición
+        //Vamos preparando cada producto para su posterior exposición
         for(Producto objProducto: productoRepo.findAll()){
             listProductos.add(buildProductoResponse(objProducto));
         }
@@ -64,7 +63,7 @@ public class ProductoService implements IProductoService{
     public ProductoResponseDto saveProducto(ProductoRequestDto objNuevo) {
         Producto objProducto = new Producto();
 
-        //Tranferencia de datos para posteriormente crear el registro
+        //Transferencia de datos para posteriormente crear el registro
         objProducto.setName(objNuevo.getName());
         objProducto.setStock(objNuevo.getStock());
         objProducto.setPrice(objNuevo.getPrice());
@@ -105,7 +104,7 @@ public class ProductoService implements IProductoService{
     public ProductoResponseDto patchProducto(Long id, ProductoRequestDto objUpdated) {
         Producto objProducto = findProducto(id);
 
-        //Modificación parcial SOLO de los datos que se enviaron en "objUdatede"
+        //Modificación parcial SOLO de los datos que se enviaron en "objUpdated"
         if(objUpdated.getName() != null){objProducto.setName(objUpdated.getName());}
         if(objUpdated.getStock() != null){objProducto.setStock(objUpdated.getStock());}
         if(objUpdated.getPrice() != null){objProducto.setPrice(objUpdated.getPrice());}
@@ -120,7 +119,7 @@ public class ProductoService implements IProductoService{
     @Transactional(readOnly = true)
     @Override
     public List<ProductoResponseDto> findProductosResponse(List<Long> productsIds) {
-        //Si no se encuentra ningún producto registrado con los ids inidcados -> NOT_FOUND
+        //Si no se encuentra ningún producto registrado con los ids indicados -> NOT_FOUND
         //Si no hay ningún ID con el que buscar -> NOT_FOUND
         if(productoRepo.findByIdIn(productsIds).isEmpty()){throw new ProductoNotFoundException("No se encontró ningún producto");}
 

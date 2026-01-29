@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/productos")
@@ -51,12 +50,12 @@ public class ProductoController {
     }
 
     @PostMapping("/traer-productos-por-ids")
-    public ResponseEntity<List<ProductoResponseDto>> findPorductos(@RequestBody List<Long> productosIds){
+    public ResponseEntity<List<ProductoResponseDto>> findProductos(@RequestBody List<Long> productosIds){
         return ResponseEntity.ok(productoService.findProductosResponse(productosIds));
     }
 
-    @PatchMapping("/descontar-stock")
-    public ResponseEntity<Void> descontarStock(@RequestParam Long productoId, @RequestParam Integer cantidadDescontar){
+    @PatchMapping("/descontar-stock/{productoId}")
+    public ResponseEntity<Void> descontarStock(@PathVariable Long productoId, @RequestBody Integer cantidadDescontar){
         productoService.descontarStock(productoId, cantidadDescontar);
         return ResponseEntity.noContent().build();
     }

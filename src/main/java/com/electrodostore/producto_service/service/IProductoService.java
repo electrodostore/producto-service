@@ -31,4 +31,5 @@ public interface IProductoService {
 
     //Método para descontar una cierta cantidad al stock de un determinado producto
     void descontarStock(Long productoId, Integer cantidadDescontar);
+
 }
