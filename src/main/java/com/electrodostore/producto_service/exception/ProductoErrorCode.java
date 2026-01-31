@@ -5,6 +5,6 @@ package com.electrodostore.producto_service.exception;
 public enum ProductoErrorCode {
 
     //Se define el valor del errorCode de las excepciones
-    PRODUCT_NOT_FOUND //ProductoNotFoundException
-
+    PRODUCT_NOT_FOUND, //ProductoNotFoundException
+    PRODUCT_STOCK_INSUFICIENTE  //StockInsuficienteException
 }

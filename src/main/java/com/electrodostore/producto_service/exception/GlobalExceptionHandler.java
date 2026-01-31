@@ -16,7 +16,7 @@ por lo que la revisará para encontrar algún manejador o handler que maneje la 
 public class GlobalExceptionHandler {
 
     //Mensaje de error centralizado para cada excepción
-    private Map<String, Object> exceptionErrorMessage(HttpStatus status, String message, String errorCode){
+    private Map<String, Object> buildErrorMessage(HttpStatus status, String message, String errorCode){
         Map<String, Object> response = new LinkedHashMap<>();
 
         response.put("timestamp", LocalDateTime.now());
@@ -33,6 +33,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductoNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handlerProductoNotFound(ProductoNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(exceptionErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode().name()));
+                .body(buildErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode().name()));
+    }
+
+    //Manejador de la excepción StockInsuficiente
+    @ExceptionHandler(StockInsuficienteException.class)
+    public ResponseEntity<Map<String, Object>> handlerStockInsuficiente(StockInsuficienteException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(buildErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode().name()));
     }
 }
