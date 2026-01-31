@@ -148,4 +148,16 @@ public class ProductoService implements IProductoService{
 
         productoRepo.save(objProducto);
     }
+
+    @Transactional
+    @Override
+    public void reponerStock(Long productoId, Integer cantidadReponer) {
+        //Buscamos Producto para descartar inexistencia
+        Producto objProducto = findProducto(productoId);
+
+        //reponemos cantidad
+        objProducto.setStock(objProducto.getStock() + cantidadReponer);
+
+        productoRepo.save(objProducto);
+    }
 }

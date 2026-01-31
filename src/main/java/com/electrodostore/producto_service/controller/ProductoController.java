@@ -60,4 +60,10 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/reponer-stock/{productoId}")
+    public ResponseEntity<Void> reponerStock(@PathVariable Long productoId, @RequestBody Integer cantidadReponer){
+        productoService.reponerStock(productoId, cantidadReponer);
+        return ResponseEntity.noContent().build();
+    }
+
 }
