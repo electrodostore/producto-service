@@ -3,6 +3,7 @@ package com.electrodostore.producto_service.service;
 import com.electrodostore.producto_service.dto.ProductoRequestDto;
 import com.electrodostore.producto_service.dto.ProductoResponseDto;
 import com.electrodostore.producto_service.exception.ProductoNotFoundException;
+import com.electrodostore.producto_service.exception.StockInsuficienteException;
 import com.electrodostore.producto_service.model.Producto;
 import com.electrodostore.producto_service.repository.IProductoRepository;
 import org.springframework.stereotype.Service;
@@ -141,7 +142,7 @@ public class ProductoService implements IProductoService{
         Producto objProducto = findProducto(productoId);
 
         //Verificamos si tenemos stock suficiente para descontar
-        if(cantidadDescontar > objProducto.getStock()){throw new ProductoNotFoundException("Stock insuficiente");}
+        if(cantidadDescontar > objProducto.getStock()){throw new StockInsuficienteException("Stock insuficiente");}
 
         //Si llegamos a este punto, descontamos
         objProducto.setStock(objProducto.getStock() - cantidadDescontar);
