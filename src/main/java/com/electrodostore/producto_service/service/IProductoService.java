@@ -34,4 +34,7 @@ public interface IProductoService {
 
     //Contrario al método anterior, este se usa para reponer una cierta cantidad al stock de un determinado producto
     void reponerStock(Long productoId, Integer cantidadReponer);
+
+    //Método para verificar si el stock de un producto es suficiente para la cantidad que se desea comprar
+    void verificarStock(Long productoId, int cantidadVerificar);
 }

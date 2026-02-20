@@ -142,7 +142,7 @@ public class ProductoService implements IProductoService{
         Producto objProducto = findProducto(productoId);
 
         //Verificamos si tenemos stock suficiente para descontar
-        if(cantidadDescontar > objProducto.getStock()){throw new StockInsuficienteException("Stock insuficiente");}
+        verificarStock(productoId, cantidadDescontar);
 
         //Si llegamos a este punto, descontamos
         objProducto.setStock(objProducto.getStock() - cantidadDescontar);
@@ -160,5 +160,15 @@ public class ProductoService implements IProductoService{
         objProducto.setStock(objProducto.getStock() + cantidadReponer);
 
         productoRepo.save(objProducto);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public void verificarStock(Long productoId, int stockVerificar) {
+        //Buscamos el producto
+        Producto objProducto = findProducto(productoId);
+
+        //Si no hay stock suficiente -> Excepción que lo indica. Si el stock es suficiente no pasa nada
+        if(objProducto.getStock() < stockVerificar){throw new StockInsuficienteException("Stock insuficiente");}
     }
 }
