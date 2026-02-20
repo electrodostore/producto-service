@@ -66,4 +66,10 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/verificar-stock/{productoId}")
+    public ResponseEntity<Void> verificarStockProducto(@PathVariable Long productoId, @RequestBody int cantidadVerificar){
+        productoService.verificarStock(productoId, cantidadVerificar);
+        return ResponseEntity.noContent().build();
+    }
+
 }
