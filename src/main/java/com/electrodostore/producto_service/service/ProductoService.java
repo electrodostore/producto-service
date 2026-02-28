@@ -169,6 +169,7 @@ public class ProductoService implements IProductoService{
         Producto objProducto = findProducto(productoId);
 
         //Si no hay stock suficiente -> Excepción que lo indica. Si el stock es suficiente no pasa nada
-        if(objProducto.getStock() < stockVerificar){throw new StockInsuficienteException("Stock insuficiente");}
+        if(objProducto.getStock() < stockVerificar){throw new StockInsuficienteException("El producto con id: " +
+                productoId + " no tiene stock suficiente para cubrir la cantidad: " + stockVerificar);}
     }
 }
