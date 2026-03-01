@@ -54,12 +54,12 @@ public class ProductoController {
     public ResponseEntity<List<ProductoResponseDto>> findProductos(@RequestBody List<Long> productosIds){
         return ResponseEntity.ok(productoService.findProductosResponse(productosIds));
     }
-//
-//    @PatchMapping("/descontar-stock/{productoId}")
-//    public ResponseEntity<Void> descontarStock(@PathVariable Long productoId, @RequestBody Integer cantidadDescontar){
-//        productoService.descontarStock(productoId, cantidadDescontar);
-//        return ResponseEntity.noContent().build();
-//    }
+
+    @PatchMapping("/descontar-stock")
+    public ResponseEntity<Void> descontarStock(@RequestBody List<ProductoOperacionStockDto> productosDescontarStock){
+        productoService.descontarStock(productosDescontarStock);
+        return ResponseEntity.noContent().build();
+    }
 //
 //    @PatchMapping("/reponer-stock/{productoId}")
 //    public ResponseEntity<Void> reponerStock(@PathVariable Long productoId, @RequestBody Integer cantidadReponer){
