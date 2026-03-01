@@ -60,12 +60,12 @@ public class ProductoController {
         productoService.descontarStock(productosDescontarStock);
         return ResponseEntity.noContent().build();
     }
-//
-//    @PatchMapping("/reponer-stock/{productoId}")
-//    public ResponseEntity<Void> reponerStock(@PathVariable Long productoId, @RequestBody Integer cantidadReponer){
-//        productoService.reponerStock(productoId, cantidadReponer);
-//        return ResponseEntity.noContent().build();
-//    }
+
+    @PatchMapping("/reponer-stock")
+    public ResponseEntity<Void> reponerStock(@RequestBody List<ProductoOperacionStockDto> productosReponerStock){
+        productoService.reponerStock(productosReponerStock);
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/verificar-stock")
     public ResponseEntity<Void> verificarStockProducto(@RequestBody List<ProductoOperacionStockDto> productosValidarStock){
