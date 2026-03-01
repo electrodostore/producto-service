@@ -1,5 +1,6 @@
 package com.electrodostore.producto_service.controller;
 
+import com.electrodostore.producto_service.dto.ProductoOperacionStockDto;
 import com.electrodostore.producto_service.dto.ProductoRequestDto;
 import com.electrodostore.producto_service.dto.ProductoResponseDto;
 import com.electrodostore.producto_service.service.IProductoService;
@@ -53,22 +54,22 @@ public class ProductoController {
     public ResponseEntity<List<ProductoResponseDto>> findProductos(@RequestBody List<Long> productosIds){
         return ResponseEntity.ok(productoService.findProductosResponse(productosIds));
     }
+//
+//    @PatchMapping("/descontar-stock/{productoId}")
+//    public ResponseEntity<Void> descontarStock(@PathVariable Long productoId, @RequestBody Integer cantidadDescontar){
+//        productoService.descontarStock(productoId, cantidadDescontar);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    @PatchMapping("/reponer-stock/{productoId}")
+//    public ResponseEntity<Void> reponerStock(@PathVariable Long productoId, @RequestBody Integer cantidadReponer){
+//        productoService.reponerStock(productoId, cantidadReponer);
+//        return ResponseEntity.noContent().build();
+//    }
 
-    @PatchMapping("/descontar-stock/{productoId}")
-    public ResponseEntity<Void> descontarStock(@PathVariable Long productoId, @RequestBody Integer cantidadDescontar){
-        productoService.descontarStock(productoId, cantidadDescontar);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/reponer-stock/{productoId}")
-    public ResponseEntity<Void> reponerStock(@PathVariable Long productoId, @RequestBody Integer cantidadReponer){
-        productoService.reponerStock(productoId, cantidadReponer);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/verificar-stock/{productoId}")
-    public ResponseEntity<Void> verificarStockProducto(@PathVariable Long productoId, @RequestBody int cantidadVerificar){
-        productoService.verificarStock(productoId, cantidadVerificar);
+    @PostMapping("/verificar-stock")
+    public ResponseEntity<Void> verificarStockProducto(@RequestBody List<ProductoOperacionStockDto> productosValidarStock){
+        productoService.verificarStock(productosValidarStock);
         return ResponseEntity.noContent().build();
     }
 
