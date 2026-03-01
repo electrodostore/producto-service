@@ -1,5 +1,6 @@
 package com.electrodostore.producto_service.service;
 
+import com.electrodostore.producto_service.dto.ProductoOperacionStockDto;
 import com.electrodostore.producto_service.dto.ProductoRequestDto;
 import com.electrodostore.producto_service.dto.ProductoResponseDto;
 
@@ -29,12 +30,7 @@ public interface IProductoService {
     //Modificación parcial (Solo lo solicitado) del registro Producto
     ProductoResponseDto patchProducto(Long id, ProductoRequestDto objUpdated);
 
-    //Método para descontar una cierta cantidad al stock de un determinado producto
-    void descontarStock(Long productoId, Integer cantidadDescontar);
 
-    //Contrario al método anterior, este se usa para reponer una cierta cantidad al stock de un determinado producto
-    void reponerStock(Long productoId, Integer cantidadReponer);
-
-    //Método para verificar si el stock de un producto es suficiente para la cantidad que se desea comprar
-    void verificarStock(Long productoId, int cantidadVerificar);
+    //Método para verificar si el stock de unos productos es suficiente para la cantidad que se desea comprar de estos
+    void verificarStock(List<ProductoOperacionStockDto> productosValidarStock);
 }
