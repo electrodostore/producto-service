@@ -13,5 +13,5 @@ import lombok.Setter;
 public class ProductoOperacionStockDto {
 
     private Long productoId;
-    private Long cantidadOperar; //Cantidad que se va a operar sobre el stock del producto
+    private Integer cantidadOperar; //Cantidad que se va a operar sobre el stock del producto
 }
