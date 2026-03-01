@@ -209,4 +209,37 @@ public class ProductoService implements IProductoService {
         }
 
     }
+
+    @Transactional
+    @Override
+    public void descontarStock(List<ProductoOperacionStockDto> productosDescontarStock) {
+        //Validamos que el stock de los productos si es suficiente para la cantidad que se quiere descontar
+        verificarStock(productosDescontarStock);
+
+        //Buscamos los productos que se les va a descontar el stock
+        List<Producto> listProductos = findVariosProductos(
+                getProductosIds(productosDescontarStock)
+        );
+
+        //Recorremos la lista de productos que se mandaron a descontar
+        for(ProductoOperacionStockDto productoDescontarStock: productosDescontarStock){
+
+            //Ahora recorremos la lista de productos buscados a partir de los que se van a descontar (Deben ser equivalentes en ID)
+            for(Producto objProducto: listProductos){
+
+                //Comparamos Ids de ambos para confirmar que son equivalentes
+                if(productoDescontarStock.getProductoId().equals(objProducto.getId())){
+
+                    //Si lo son, entonces descontamos la cantidad al stock del producto
+                    objProducto.setStock(objProducto.getStock() - productoDescontarStock.getCantidadOperar());
+
+                    //Cundo encontremos el producto equivalente al que se mandó a descontar, ya no es necesario seguir buscando
+                    break;
+                }
+            }
+        }
+
+        //Al final actualizamos todos los productos en la base de datos
+        productoRepo.saveAll(listProductos);
+    }
 }

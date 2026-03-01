@@ -30,6 +30,8 @@ public interface IProductoService {
     //Modificación parcial (Solo lo solicitado) del registro Producto
     ProductoResponseDto patchProducto(Long id, ProductoRequestDto objUpdated);
 
+    //Método para descontar una cierta cantidad al stock de una lista de productos
+    void descontarStock(List<ProductoOperacionStockDto> productosDescontarStock);
 
     //Método para verificar si el stock de unos productos es suficiente para la cantidad que se desea comprar de estos
     void verificarStock(List<ProductoOperacionStockDto> productosValidarStock);
