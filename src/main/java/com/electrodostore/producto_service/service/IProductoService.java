@@ -33,6 +33,9 @@ public interface IProductoService {
     //Método para descontar una cierta cantidad al stock de una lista de productos
     void descontarStock(List<ProductoOperacionStockDto> productosDescontarStock);
 
+    //Contrario al método anterior, este se usa para reponer una cierta cantidad al stock de una lista de productos
+    void reponerStock(List<ProductoOperacionStockDto> productosReponerStock);
+
     //Método para verificar si el stock de unos productos es suficiente para la cantidad que se desea comprar de estos
     void verificarStock(List<ProductoOperacionStockDto> productosValidarStock);
 }

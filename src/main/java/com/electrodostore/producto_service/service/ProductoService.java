@@ -242,4 +242,34 @@ public class ProductoService implements IProductoService {
         //Al final actualizamos todos los productos en la base de datos
         productoRepo.saveAll(listProductos);
     }
+
+    @Transactional
+    @Override
+    public void reponerStock(List<ProductoOperacionStockDto> productosReponerStock) {
+        //Buscamos los productos que se les va a reponer el stock
+        List<Producto> listProductos = findVariosProductos(
+                getProductosIds(productosReponerStock)
+        );
+
+        //Recorremos la lista de productos que se mandaron a reponer
+        for(ProductoOperacionStockDto productoReponerStock: productosReponerStock){
+
+            //Ahora recorremos la lista de productos buscados a partir de los que se van a reponer (Deben ser equivalentes en ID)
+            for(Producto objProducto: listProductos){
+
+                //Comparamos Ids de ambos para confirmar que son equivalentes
+                if(productoReponerStock.getProductoId().equals(objProducto.getId())){
+
+                    //Si lo son, entonces reponemos la cantidad al stock del producto
+                    objProducto.setStock(objProducto.getStock() + productoReponerStock.getCantidadOperar());
+
+                    //Cundo encontremos el producto equivalente al que se mandó a reponer, ya no es necesario seguir buscando
+                    break;
+                }
+            }
+        }
+
+        //Al final actualizamos todos los productos en la base de datos
+        productoRepo.saveAll(listProductos);
+    }
 }
