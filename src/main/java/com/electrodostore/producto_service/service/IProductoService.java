@@ -22,7 +22,8 @@ public interface IProductoService {
 
     ProductoResponseDto saveProducto(ProductoRequestDto objNuevo);
 
-    void deleteProducto(Long id);
+    //Soft Delete para evitar perder datos históricos importantes
+    void disableProducto(Long id);
 
     //Modificación completa del registro Producto
     ProductoResponseDto updateProducto(Long id, ProductoRequestDto objUpdated);

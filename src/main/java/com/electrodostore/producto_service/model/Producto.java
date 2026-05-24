@@ -24,5 +24,7 @@ public class Producto {
     private Integer stock;
     private BigDecimal price;
     private String description;
+    //Estado del producto
+    private boolean active=true;
 
 }

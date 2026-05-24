@@ -18,4 +18,5 @@ public class ProductoResponseDto {
     private Integer stock;
     private BigDecimal price;
     private String description;
+    private boolean active;
 }

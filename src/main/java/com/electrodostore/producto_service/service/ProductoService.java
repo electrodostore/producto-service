@@ -26,8 +26,13 @@ public class ProductoService implements IProductoService {
 
     //Método propio para preparar a un objeto Producto para la exposición al cliente
     private ProductoResponseDto buildProductoResponse(Producto objProducto) {
-        return new ProductoResponseDto(objProducto.getId(), objProducto.getName(), objProducto.getStock(),
-                objProducto.getPrice(), objProducto.getDescription());
+        return new ProductoResponseDto(objProducto.getId(),
+                objProducto.getName(),
+                objProducto.getStock(),
+                objProducto.getPrice(),
+                objProducto.getDescription(),
+                objProducto.isActive()
+        );
     }
 
     /*Método propio para traer un registro de Producto que se usará exclusivamente para operaciones
@@ -37,7 +42,7 @@ public class ProductoService implements IProductoService {
         Optional<Producto> objProducto = productoRepo.findById(id);
 
         //Si el optional viene vació, quiere decir que no existe registro con ese ID --> Excepción
-        if (objProducto.isEmpty()) {
+        if (objProducto.isEmpty() || !(objProducto.get().isActive())) {
             throw new ProductoNotFoundException("No se encontró producto con id: " + id);
         }
 
@@ -77,7 +82,7 @@ public class ProductoService implements IProductoService {
         List<ProductoResponseDto> listProductos = new ArrayList<>();
 
         //Vamos preparando cada producto para su posterior exposición
-        for (Producto objProducto : productoRepo.findAll()) {
+        for (Producto objProducto : productoRepo.findByActiveTrue()) {
             listProductos.add(buildProductoResponse(objProducto));
         }
 
@@ -109,10 +114,10 @@ public class ProductoService implements IProductoService {
 
     @Transactional
     @Override
-    public void deleteProducto(Long id) {
+    public void disableProducto(Long id) {
         Producto objProducto = findProducto(id);
 
-        productoRepo.delete(objProducto);
+        objProducto.setActive(false);
     }
 
     @Transactional
