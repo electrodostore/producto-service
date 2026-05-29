@@ -69,7 +69,7 @@ public class ProductoService implements IProductoService {
 
         //Vamos sacando los ids de los productos de la lista de productos a operar stock
         for(ProductoOperacionStockDto objProducto: productosOperarStock){
-            productosIds.add(objProducto.getProductoId());
+            productosIds.add(objProducto.productoId());
         }
 
         return productosIds;
@@ -102,10 +102,10 @@ public class ProductoService implements IProductoService {
         Producto objProducto = new Producto();
 
         //Transferencia de datos para posteriormente crear el registro
-        objProducto.setName(objNuevo.getName());
-        objProducto.setStock(objNuevo.getStock());
-        objProducto.setPrice(objNuevo.getPrice());
-        objProducto.setDescription(objNuevo.getDescription());
+        objProducto.setName(objNuevo.name());
+        objProducto.setStock(objNuevo.stock());
+        objProducto.setPrice(objNuevo.price());
+        objProducto.setDescription(objNuevo.description());
 
         productoRepo.save(objProducto);
 
@@ -126,10 +126,10 @@ public class ProductoService implements IProductoService {
         Producto objProducto = findProducto(id);
 
         //Modificación de datos del registro solicitado
-        objProducto.setName(objUpdated.getName());
-        objProducto.setStock(objUpdated.getStock());
-        objProducto.setPrice(objUpdated.getPrice());
-        objProducto.setDescription(objUpdated.getDescription());
+        objProducto.setName(objUpdated.name());
+        objProducto.setStock(objUpdated.stock());
+        objProducto.setPrice(objUpdated.price());
+        objProducto.setDescription(objUpdated.description());
 
         //Guardamos cambios
         productoRepo.save(objProducto);
@@ -143,17 +143,17 @@ public class ProductoService implements IProductoService {
         Producto objProducto = findProducto(id);
 
         //Modificación parcial SOLO de los datos que se enviaron en "objUpdated"
-        if (objUpdated.getName() != null) {
-            objProducto.setName(objUpdated.getName());
+        if (objUpdated.name() != null) {
+            objProducto.setName(objUpdated.name());
         }
-        if (objUpdated.getStock() != null) {
-            objProducto.setStock(objUpdated.getStock());
+        if (objUpdated.stock() != null) {
+            objProducto.setStock(objUpdated.stock());
         }
-        if (objUpdated.getPrice() != null) {
-            objProducto.setPrice(objUpdated.getPrice());
+        if (objUpdated.price() != null) {
+            objProducto.setPrice(objUpdated.price());
         }
-        if (objUpdated.getDescription() != null) {
-            objProducto.setDescription(objUpdated.getDescription());
+        if (objUpdated.description() != null) {
+            objProducto.setDescription(objUpdated.description());
         }
 
         //Guardamos cambios
@@ -197,14 +197,14 @@ public class ProductoService implements IProductoService {
             for(Producto objProducto: listProductos){
 
                 //Comparamos Ids de ambos para confirmar que son equivalentes
-                if(productoValidarStock.getProductoId().equals(objProducto.getId())){
+                if(productoValidarStock.productoId().equals(objProducto.getId())){
 
                     //Si lo son, entonces validamos que el stock si pueda cubrir la cantidad que se quiere
-                    if(objProducto.getStock() < productoValidarStock.getCantidadOperar()){
+                    if(objProducto.getStock() < productoValidarStock.cantidadOperar()){
 
                         //Si la cantidad no puede ser cubierta -> Excepción indicándolo
                         throw new StockInsuficienteException("El producto con id: " + objProducto.getId() +
-                                " no tiene suficiente stock para cubrir la cantidad: " + productoValidarStock.getCantidadOperar());
+                                " no tiene suficiente stock para cubrir la cantidad: " + productoValidarStock.cantidadOperar());
                     }
 
                     //Cundo encontremos el producto equivalente al que se mandó a validar, ya no es necesario seguir buscando
@@ -233,10 +233,10 @@ public class ProductoService implements IProductoService {
             for(Producto objProducto: listProductos){
 
                 //Comparamos Ids de ambos para confirmar que son equivalentes
-                if(productoDescontarStock.getProductoId().equals(objProducto.getId())){
+                if(productoDescontarStock.productoId().equals(objProducto.getId())){
 
                     //Si lo son, entonces descontamos la cantidad al stock del producto
-                    objProducto.setStock(objProducto.getStock() - productoDescontarStock.getCantidadOperar());
+                    objProducto.setStock(objProducto.getStock() - productoDescontarStock.cantidadOperar());
 
                     //Cundo encontremos el producto equivalente al que se mandó a descontar, ya no es necesario seguir buscando
                     break;
@@ -263,10 +263,10 @@ public class ProductoService implements IProductoService {
             for(Producto objProducto: listProductos){
 
                 //Comparamos Ids de ambos para confirmar que son equivalentes
-                if(productoReponerStock.getProductoId().equals(objProducto.getId())){
+                if(productoReponerStock.productoId().equals(objProducto.getId())){
 
                     //Si lo son, entonces reponemos la cantidad al stock del producto
-                    objProducto.setStock(objProducto.getStock() + productoReponerStock.getCantidadOperar());
+                    objProducto.setStock(objProducto.getStock() + productoReponerStock.cantidadOperar());
 
                     //Cundo encontremos el producto equivalente al que se mandó a reponer, ya no es necesario seguir buscando
                     break;
