@@ -33,12 +33,12 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoResponseDto> saveProducto(@RequestBody @Valid ProductoRequestDto objNuevo){
+    public ResponseEntity<ProductoResponseDto> createProducto(@RequestBody @Valid ProductoRequestDto objNuevo){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productoService.saveProducto(objNuevo));
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/disable")
     public ResponseEntity<Void> disableProducto(@PathVariable Long id){
         productoService.disableProducto(id);
         return ResponseEntity.noContent().build();
@@ -54,24 +54,24 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.patchProducto(id, objUpdated));
     }
 
-    @PostMapping("/traer-productos-por-ids")
-    public ResponseEntity<List<ProductoResponseDto>> findProductos(@RequestBody @NotBlank List<@NotNull Long> productosIds){
+    @PostMapping("/search")
+    public ResponseEntity<List<ProductoResponseDto>> findProductos(@RequestBody @NotEmpty List<@NotNull Long> productosIds){
         return ResponseEntity.ok(productoService.findProductosResponse(productosIds));
     }
 
-    @PatchMapping("/descontar-stock")
+    @PatchMapping("/stock/descontar")
     public ResponseEntity<Void> descontarStock(@RequestBody @NotEmpty List<@NotNull @Valid ProductoOperacionStockDto> productosDescontarStock){
         productoService.descontarStock(productosDescontarStock);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/reponer-stock")
-    public ResponseEntity<Void> reponerStock(@NotEmpty List<@NotNull @Valid ProductoOperacionStockDto> productosReponerStock){
+    @PatchMapping("/stock/reponer")
+    public ResponseEntity<Void> reponerStock(@RequestBody @NotEmpty List<@NotNull @Valid ProductoOperacionStockDto> productosReponerStock){
         productoService.reponerStock(productosReponerStock);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/verificar-stock")
+    @PostMapping("/stock/verificar")
     public ResponseEntity<Void> verificarStockProducto(@RequestBody @NotEmpty List<@NotNull @Valid ProductoOperacionStockDto> productosValidarStock){
         productoService.verificarStock(productosValidarStock);
         return ResponseEntity.noContent().build();
