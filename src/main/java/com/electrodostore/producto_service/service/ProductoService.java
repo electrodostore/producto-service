@@ -1,14 +1,17 @@
 package com.electrodostore.producto_service.service;
 
 import com.electrodostore.producto_service.dto.ProductoOperacionStockDto;
+import com.electrodostore.producto_service.dto.ProductoPatchRequestDto;
 import com.electrodostore.producto_service.dto.ProductoRequestDto;
 import com.electrodostore.producto_service.dto.ProductoResponseDto;
 import com.electrodostore.producto_service.exception.ProductoNotFoundException;
 import com.electrodostore.producto_service.exception.StockInsuficienteException;
 import com.electrodostore.producto_service.model.Producto;
 import com.electrodostore.producto_service.repository.IProductoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +78,14 @@ public class ProductoService implements IProductoService {
         return productosIds;
     }
 
+    //Valida que un string enviado como valor de un campo no esté vació ni lleno de espacios
+    private void validarNotBlank(String valor, String nombreCampo){
+        if(valor.isBlank()){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, nombreCampo + " no puede estar vacío"
+            );
+        }
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -131,33 +142,32 @@ public class ProductoService implements IProductoService {
         objProducto.setPrice(objUpdated.price());
         objProducto.setDescription(objUpdated.description());
 
-        //Guardamos cambios
-        productoRepo.save(objProducto);
-
         return buildProductoResponse(objProducto);
     }
 
     @Transactional
     @Override
-    public ProductoResponseDto patchProducto(Long id, ProductoRequestDto objUpdated) {
+    public ProductoResponseDto patchProducto(Long id, ProductoPatchRequestDto objUpdated) {
         Producto objProducto = findProducto(id);
 
         //Modificación parcial SOLO de los datos que se enviaron en "objUpdated"
         if (objUpdated.name() != null) {
+            validarNotBlank(objUpdated.name(), "el nombre");
             objProducto.setName(objUpdated.name());
         }
+
         if (objUpdated.stock() != null) {
             objProducto.setStock(objUpdated.stock());
         }
+
         if (objUpdated.price() != null) {
             objProducto.setPrice(objUpdated.price());
         }
+
         if (objUpdated.description() != null) {
+            validarNotBlank(objUpdated.description(), "la descripción");
             objProducto.setDescription(objUpdated.description());
         }
-
-        //Guardamos cambios
-        productoRepo.save(objProducto);
 
         return buildProductoResponse(objProducto);
     }

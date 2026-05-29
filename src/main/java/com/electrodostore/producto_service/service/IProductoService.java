@@ -1,6 +1,7 @@
 package com.electrodostore.producto_service.service;
 
 import com.electrodostore.producto_service.dto.ProductoOperacionStockDto;
+import com.electrodostore.producto_service.dto.ProductoPatchRequestDto;
 import com.electrodostore.producto_service.dto.ProductoRequestDto;
 import com.electrodostore.producto_service.dto.ProductoResponseDto;
 
@@ -29,7 +30,7 @@ public interface IProductoService {
     ProductoResponseDto updateProducto(Long id, ProductoRequestDto objUpdated);
 
     //Modificación parcial (Solo lo solicitado) del registro Producto
-    ProductoResponseDto patchProducto(Long id, ProductoRequestDto objUpdated);
+    ProductoResponseDto patchProducto(Long id, ProductoPatchRequestDto objUpdated);
 
     //Método para descontar una cierta cantidad al stock de una lista de productos
     void descontarStock(List<ProductoOperacionStockDto> productosDescontarStock);

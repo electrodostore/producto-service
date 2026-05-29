@@ -1,6 +1,7 @@
 package com.electrodostore.producto_service.controller;
 
 import com.electrodostore.producto_service.dto.ProductoOperacionStockDto;
+import com.electrodostore.producto_service.dto.ProductoPatchRequestDto;
 import com.electrodostore.producto_service.dto.ProductoRequestDto;
 import com.electrodostore.producto_service.dto.ProductoResponseDto;
 import com.electrodostore.producto_service.service.IProductoService;
@@ -50,7 +51,7 @@ public class ProductoController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductoResponseDto> patchProducto(@PathVariable Long id, @RequestBody ProductoRequestDto objUpdated){
+    public ResponseEntity<ProductoResponseDto> patchProducto(@PathVariable Long id, @RequestBody @Valid ProductoPatchRequestDto objUpdated){
         return ResponseEntity.ok(productoService.patchProducto(id, objUpdated));
     }
 
