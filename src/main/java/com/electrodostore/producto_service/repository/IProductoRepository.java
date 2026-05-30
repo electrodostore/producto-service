@@ -6,15 +6,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Set;
 
-//Interface que hereda la clase de Spring-Data-Jpa que nos proporciona una cantidad de métodos útiles para
-// la persistencia de datos
+/**
+ * Repositorio de datos para producto-service
+ * */
 public interface IProductoRepository extends JpaRepository<Producto, Long> {
 
-    /*Método para treaer una lista de productos buscados por sus ids.
-    NOTA: El nombre debe seguir la estructura <accion>By<propiedad><operador> para que SpringData lo intrerprete correctamente
-    NOTA: Cuando se espera retornar una lista de algunos registros, el IN como operador es obligatorio*/
+    /**
+     * Consulta una lista de productos por sus ids.
+     */
     List<Producto> findByIdIn(List<Long> ids);
 
-    //Trae solo los productos activos desde la base de datos
+    /**
+     * Trae solo los productos activos desde la base de datos
+     */
     List<Producto> findByActiveTrue();
 }

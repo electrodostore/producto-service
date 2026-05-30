@@ -8,36 +8,41 @@ import com.electrodostore.producto_service.dto.ProductoResponseDto;
 import java.util.List;
 import java.util.Set;
 
-//Interfaz que define la lógica de negocio asociada a la gestión de productos
 public interface IProductoService {
 
-    //Traer todos los productos
     List<ProductoResponseDto> findAllProductos();
 
-    //Traer un producto determinado por su id
     ProductoResponseDto findProductoResponse(Long id);
 
-    /*Método para encontrar una lista de productos,a partir de sus ids.
-    Método útil para venta-service que necesita encontrar la lista de productos de una determinada venta*/
+    /**
+     * Busca un conjunto de productos por sus ids
+     */
     List<ProductoResponseDto> findProductosResponse(List<Long> productsIds);
 
     ProductoResponseDto saveProducto(ProductoRequestDto objNuevo);
 
-    //Soft Delete para evitar perder datos históricos importantes
+    /**
+     * Borrado lógico para evitar perder datos históricos importantes
+     */
     void disableProducto(Long id);
 
-    //Modificación completa del registro Producto
     ProductoResponseDto updateProducto(Long id, ProductoRequestDto objUpdated);
 
-    //Modificación parcial (Solo lo solicitado) del registro Producto
     ProductoResponseDto patchProducto(Long id, ProductoPatchRequestDto objUpdated);
 
-    //Método para descontar una cierta cantidad al stock de una lista de productos
+    /**
+     * Descuenta una cierta cantidad al stock de una lista de productos
+     */
     void descontarStock(List<ProductoOperacionStockDto> productosDescontarStock);
 
-    //Contrario al método anterior, este se usa para reponer una cierta cantidad al stock de una lista de productos
+    /**
+     * Repone una cierta cantidad al stock de una lista de productos
+     */
     void reponerStock(List<ProductoOperacionStockDto> productosReponerStock);
 
-    //Método para verificar si el stock de unos productos es suficiente para la cantidad que se desea comprar de estos
+    /**
+     * Verifica si el stock de una lista de productos es suficiente
+     * para cubrir la cantidad que se desea comprar de estos.
+     */
     void verificarStock(List<ProductoOperacionStockDto> productosValidarStock);
 }

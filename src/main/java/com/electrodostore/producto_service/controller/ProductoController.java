@@ -19,8 +19,8 @@ import java.util.List;
 @RequestMapping("/productos")
 public class ProductoController {
 
-    //Inyección de dependencia por constructor para el service de Producto
     private final IProductoService productoService;
+
     public ProductoController(IProductoService productoService){this.productoService = productoService;}
 
     @GetMapping

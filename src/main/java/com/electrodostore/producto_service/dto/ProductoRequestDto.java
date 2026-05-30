@@ -4,7 +4,6 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-//Clase Dto exclusiva para los datos que el cliente puede ingresar o modificar
 public record ProductoRequestDto(
         @NotBlank
         String name,

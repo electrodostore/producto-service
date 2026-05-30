@@ -22,14 +22,16 @@ public class ProductoService implements IProductoService {
 
     private final IProductoRepository productoRepo;
 
-    //Inyección de dependencia por constructor para el repositorio de Producto
     public ProductoService(IProductoRepository productoRepo) {
         this.productoRepo = productoRepo;
     }
 
-    //Método propio para preparar a un objeto Producto para la exposición al cliente
+    /**
+     * Construye DTO de respuesta para exponer un producto
+     * */
     private ProductoResponseDto buildProductoResponse(Producto objProducto) {
-        return new ProductoResponseDto(objProducto.getId(),
+        return new ProductoResponseDto(
+                objProducto.getId(),
                 objProducto.getName(),
                 objProducto.getStock(),
                 objProducto.getPrice(),
@@ -38,39 +40,39 @@ public class ProductoService implements IProductoService {
         );
     }
 
-    /*Método propio para traer un registro de Producto que se usará exclusivamente para operaciones
-     internas, ya que no está preparado para exponerse al cliente*/
+    /**
+     * Consulta un producto por su ID y lanza excepción si no existe
+     */
     private Producto findProducto(Long id) {
-        //El objeto viene dentro de un optional para evitar el null
-        Optional<Producto> objProducto = productoRepo.findById(id);
-
-        //Si el optional viene vació, quiere decir que no existe registro con ese ID --> Excepción
-        if (objProducto.isEmpty() || !(objProducto.get().isActive())) {
-            throw new ProductoNotFoundException("No se encontró producto con id: " + id);
-        }
-
-        return objProducto.get();
+       return productoRepo.findById(id)
+               .orElseThrow(
+                       () -> new ProductoNotFoundException("No se encontró producto con id: " + id)
+               );
     }
 
-    //Método propio para buscar una lista de productos a partir de sus ids
+    /**
+     * Consulta los datos de una lista de productos
+     * a partir de sus ids.
+     */
     private List<Producto> findVariosProductos(List<Long> productosIds) {
-        //Esta lista va a almacenar los productos
         List<Producto> listProductos = new ArrayList<>();
 
-        //Recorremos los ids y los vamos buscando uno por uno y si alguno no existe, tendremos una excepción personalizada gracias al método findProducto
         for(Long productoId: productosIds){
-            listProductos.add(findProducto(productoId));
+            listProductos.add(
+                    findProducto(productoId)
+            );
         }
 
         return listProductos;
     }
 
-    //Método propio propio para sacar los ids de los productos a los cuales se les va a operar sobre su stock
+    /**
+     * Extrae los ids de una lista de productos
+     * para realizar operaciones sobre su stock.
+     */
     private List<Long> getProductosIds(List<ProductoOperacionStockDto> productosOperarStock){
-        //Lista que va a contener los ids de los productos
         List<Long> productosIds = new ArrayList<>();
 
-        //Vamos sacando los ids de los productos de la lista de productos a operar stock
         for(ProductoOperacionStockDto objProducto: productosOperarStock){
             productosIds.add(objProducto.productoId());
         }
@@ -78,7 +80,9 @@ public class ProductoService implements IProductoService {
         return productosIds;
     }
 
-    //Valida que un string enviado como valor de un campo no esté vació ni lleno de espacios
+    /**
+     * Valida que un string enviado como valor de un campo no esté vació ni lleno de espacios
+     */
     private void validarNotBlank(String valor, String nombreCampo){
         if(valor.isBlank()){
             throw new ResponseStatusException(
@@ -92,9 +96,10 @@ public class ProductoService implements IProductoService {
     public List<ProductoResponseDto> findAllProductos() {
         List<ProductoResponseDto> listProductos = new ArrayList<>();
 
-        //Vamos preparando cada producto para su posterior exposición
         for (Producto objProducto : productoRepo.findByActiveTrue()) {
-            listProductos.add(buildProductoResponse(objProducto));
+            listProductos.add(
+                    buildProductoResponse(objProducto)
+            );
         }
 
         return listProductos;
@@ -103,8 +108,9 @@ public class ProductoService implements IProductoService {
     @Transactional(readOnly = true)
     @Override
     public ProductoResponseDto findProductoResponse(Long id) {
-        //Basta solo con preparar el objeto que viene en findProducto para exponerlo al cliente
-        return buildProductoResponse(findProducto(id));
+        return buildProductoResponse(
+                findProducto(id)
+        );
     }
 
     @Transactional
@@ -112,7 +118,6 @@ public class ProductoService implements IProductoService {
     public ProductoResponseDto saveProducto(ProductoRequestDto objNuevo) {
         Producto objProducto = new Producto();
 
-        //Transferencia de datos para posteriormente crear el registro
         objProducto.setName(objNuevo.name());
         objProducto.setStock(objNuevo.stock());
         objProducto.setPrice(objNuevo.price());
@@ -136,7 +141,7 @@ public class ProductoService implements IProductoService {
     public ProductoResponseDto updateProducto(Long id, ProductoRequestDto objUpdated) {
         Producto objProducto = findProducto(id);
 
-        //Modificación de datos del registro solicitado
+        //Modificación total de los datos del producto
         objProducto.setName(objUpdated.name());
         objProducto.setStock(objUpdated.stock());
         objProducto.setPrice(objUpdated.price());
@@ -150,7 +155,7 @@ public class ProductoService implements IProductoService {
     public ProductoResponseDto patchProducto(Long id, ProductoPatchRequestDto objUpdated) {
         Producto objProducto = findProducto(id);
 
-        //Modificación parcial SOLO de los datos que se enviaron en "objUpdated"
+        //Modificación parcial de los datos del producto
         if (objUpdated.name() != null) {
             validarNotBlank(objUpdated.name(), "el nombre");
             objProducto.setName(objUpdated.name());
@@ -175,49 +180,50 @@ public class ProductoService implements IProductoService {
     @Transactional(readOnly = true)
     @Override
     public List<ProductoResponseDto> findProductosResponse(List<Long> productsIds) {
-        //Si no se encuentra ningún producto registrado con los ids indicados -> NOT_FOUND
-        //Si no hay ningún ID con el que buscar -> NOT_FOUND
-        if (productoRepo.findByIdIn(productsIds).isEmpty()) {
+
+        List<Producto> listProductos = productoRepo.findByIdIn(productsIds);
+
+        //Valida que se encontró al menos un producto de los solicitados
+        if (listProductos.isEmpty()) {
             throw new ProductoNotFoundException("No se encontró ningún producto");
         }
 
-        //Lista de los productos que se van a exponer como Response
-        List<ProductoResponseDto> saleProducts = new ArrayList<>();
+        List<ProductoResponseDto> productosResponse = new ArrayList<>();
 
-        //Vamos transfiriendo los datos que vienen desde la base de datos a los DTO que serán expuestos al cliente
-        for (Producto objProducto : productoRepo.findByIdIn(productsIds)) {
-            saleProducts.add(buildProductoResponse(objProducto));
+        for (Producto objProducto : listProductos) {
+            productosResponse.add(
+                    buildProductoResponse(objProducto));
         }
 
-        return saleProducts;
+        return productosResponse;
     }
 
 
     @Override
     public void verificarStock(List<ProductoOperacionStockDto> productosValidarStock) {
-        //Buscamos los productos que se les va a validar el stock
+
         List<Producto> listProductos = findVariosProductos(
                 getProductosIds(productosValidarStock)
         );
 
-        //Recorremos la lista de productos que se mandaron a validar
+        /*Sincroniza cada producto que se mandó a validar con
+        * su correspondiente registro en este servicio
+        * para verificar si el stock es suficiente
+        */
         for(ProductoOperacionStockDto productoValidarStock: productosValidarStock){
 
-            //Ahora recorremos la lista de productos buscados a partir de los que se van a validar (Deben ser equivalentes en ID)
             for(Producto objProducto: listProductos){
 
-                //Comparamos Ids de ambos para confirmar que son equivalentes
                 if(productoValidarStock.productoId().equals(objProducto.getId())){
 
-                    //Si lo son, entonces validamos que el stock si pueda cubrir la cantidad que se quiere
                     if(objProducto.getStock() < productoValidarStock.cantidadOperar()){
-
-                        //Si la cantidad no puede ser cubierta -> Excepción indicándolo
-                        throw new StockInsuficienteException("El producto con id: " + objProducto.getId() +
-                                " no tiene suficiente stock para cubrir la cantidad: " + productoValidarStock.cantidadOperar());
+                        throw new StockInsuficienteException(
+                                "El producto con id: " + objProducto.getId() +
+                                " no tiene suficiente stock para cubrir la cantidad: " + productoValidarStock.cantidadOperar()
+                        );
                     }
 
-                    //Cundo encontremos el producto equivalente al que se mandó a validar, ya no es necesario seguir buscando
+                    //Deja de buscar cundo se encuentre el producto equivalente y se valide el stock
                     break;
                 }
             }
@@ -228,63 +234,62 @@ public class ProductoService implements IProductoService {
     @Transactional
     @Override
     public void descontarStock(List<ProductoOperacionStockDto> productosDescontarStock) {
-        //Validamos que el stock de los productos si es suficiente para la cantidad que se quiere descontar
+        //Valida stock de los productos antes de descontar
         verificarStock(productosDescontarStock);
 
-        //Buscamos los productos que se les va a descontar el stock
         List<Producto> listProductos = findVariosProductos(
                 getProductosIds(productosDescontarStock)
         );
 
-        //Recorremos la lista de productos que se mandaron a descontar
+        /*Sincroniza cada producto que se mandó a descontar con
+         * su correspondiente registro en este servicio
+         * para descontar el stock del producto.
+         */
         for(ProductoOperacionStockDto productoDescontarStock: productosDescontarStock){
 
-            //Ahora recorremos la lista de productos buscados a partir de los que se van a descontar (Deben ser equivalentes en ID)
             for(Producto objProducto: listProductos){
 
-                //Comparamos Ids de ambos para confirmar que son equivalentes
                 if(productoDescontarStock.productoId().equals(objProducto.getId())){
 
-                    //Si lo son, entonces descontamos la cantidad al stock del producto
-                    objProducto.setStock(objProducto.getStock() - productoDescontarStock.cantidadOperar());
+                    //Descuenta stock
+                    objProducto.setStock(
+                            objProducto.getStock() - productoDescontarStock.cantidadOperar()
+                    );
 
-                    //Cundo encontremos el producto equivalente al que se mandó a descontar, ya no es necesario seguir buscando
+                    //Para de buscar cuando se encuentre el producto equivalente y se descuente el stock
                     break;
                 }
             }
         }
 
-        //Al final actualizamos todos los productos en la base de datos
-        productoRepo.saveAll(listProductos);
     }
 
     @Transactional
     @Override
     public void reponerStock(List<ProductoOperacionStockDto> productosReponerStock) {
-        //Buscamos los productos que se les va a reponer el stock
         List<Producto> listProductos = findVariosProductos(
                 getProductosIds(productosReponerStock)
         );
 
-        //Recorremos la lista de productos que se mandaron a reponer
+        /*Sincroniza cada producto que se mandó a reponer con
+         * su correspondiente registro en este servicio
+         * para reponer el stock del producto.
+         */
         for(ProductoOperacionStockDto productoReponerStock: productosReponerStock){
 
-            //Ahora recorremos la lista de productos buscados a partir de los que se van a reponer (Deben ser equivalentes en ID)
             for(Producto objProducto: listProductos){
 
-                //Comparamos Ids de ambos para confirmar que son equivalentes
                 if(productoReponerStock.productoId().equals(objProducto.getId())){
 
-                    //Si lo son, entonces reponemos la cantidad al stock del producto
-                    objProducto.setStock(objProducto.getStock() + productoReponerStock.cantidadOperar());
+                    //Repone stock
+                    objProducto.setStock(
+                            objProducto.getStock() + productoReponerStock.cantidadOperar()
+                    );
 
-                    //Cundo encontremos el producto equivalente al que se mandó a reponer, ya no es necesario seguir buscando
+                    //Deja de buscar cuando se encuentre el producto equivalente y se reponga stock
                     break;
                 }
             }
         }
-
-        //Al final actualizamos todos los productos en la base de datos
-        productoRepo.saveAll(listProductos);
     }
 }
