@@ -35,8 +35,7 @@ public class ProductoService implements IProductoService {
                 objProducto.getName(),
                 objProducto.getStock(),
                 objProducto.getPrice(),
-                objProducto.getDescription(),
-                objProducto.isActive()
+                objProducto.getDescription()
         );
     }
 

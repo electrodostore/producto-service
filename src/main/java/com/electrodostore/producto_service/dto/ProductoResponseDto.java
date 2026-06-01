@@ -7,7 +7,6 @@ public record ProductoResponseDto(
         String name,
         Integer stock,
         BigDecimal price,
-        String description,
-        boolean active
+        String description
 ) {
 }
