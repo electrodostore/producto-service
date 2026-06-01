@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StockInsuficienteException.class)
     public ResponseEntity<Map<String, Object>> handlerStockInsuficiente(StockInsuficienteException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(buildErrorMessage(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode().name()));
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(buildErrorMessage(HttpStatus.CONFLICT, ex.getMessage(), ex.getErrorCode().name()));
     }
 }
